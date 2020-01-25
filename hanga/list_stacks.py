@@ -1,16 +1,10 @@
 import sys
 
 import click
+import boto3
 
 from . import _session
 from . import hanga_constants as const
-
-
-# @click.option('--nameFilterType', '-f',
-#               help='List stack name containing the given TEXT')
-
-# @click.option('--name',
-#               help='List stack name containing the given TEXT')
 
 
 @click.option('--print', '-p',
@@ -45,7 +39,8 @@ def list_stacks(print, name_match, status_match):
         click.secho(const.ERM_PROFILE_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_PROFILE_INVALID)
 
-    for response in response[const.STACK_SUMMARIES]:
+    json = response[const.STACK_SUMMARIES]
+    for response in json:
 
         stackStatus = str(response[const.STACK_STATUS])
 

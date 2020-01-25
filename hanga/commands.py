@@ -7,10 +7,8 @@ import click
 # custom packages
 from . import _session
 from . import hanga_constants as const
-from . import create
-from . import dryrun
-from . import delete
 from . import list_stacks
+from . import describe_stack
 
 
 def _print_version(ctx, param, value):
@@ -55,11 +53,9 @@ def describe():
     """
     pass
 
-cli.add_command(describe)
-cli.add_command(create.create)
-cli.add_command(dryrun.dryrun)
-cli.add_command(delete.delete)
+cli.add_command(describe_stack.describe_stack)
 cli.add_command(list_stacks.list_stacks)
+
 
 
 

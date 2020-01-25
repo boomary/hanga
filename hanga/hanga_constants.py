@@ -1,7 +1,8 @@
 # AWS CLI 
 DEF_PROFILE = 'default' # Default profile
 
-# Stack fields
+# Stack fields summary 
+STACKS = 'Stacks'
 STACK_SUMMARIES = 'StackSummaries'
 STACK_NAME = 'StackName'
 STACK_ID = 'StackId'
@@ -13,6 +14,20 @@ STACK_STATUS_REASON = 'StackStatusReason'
 PARENT_ID = 'ParentId'
 ROOT_ID = 'RootId'
 DRIFT_INFORMATION ='DriftInformation'
+ENABLE_TERMINATION_PROTECTION = 'EnableTerminationProtection'
+
+# More stack fields
+DESCRIPTION = 'Description'
+TIMEOUT_IN_MINUTES = 'TimeoutInMinutes'
+ROLE_ARN = 'RoleARN'
+PARAMETERS = 'Parameters'
+TAGS = 'Tags'
+ENABLE_TERMINATION_PROTECTION= 'EnableTerminationProtection'
+OUTPUTS = 'Outputs'
+CAPABILITIES = 'Capabilities'
+NOTIFICATION_ARNS = 'NotificationARNs'
+DISABLE_ROLLBACK = 'DisableRollback'
+ROLLBACK_CONFIGURATION = 'RollbackConfiguration'
 
 
 STACK_SUMMARY_FILEDS = [STACK_ID, 
@@ -24,6 +39,18 @@ STACK_SUMMARY_FILEDS = [STACK_ID,
                     PARENT_ID,
                     ROOT_ID,
                     DRIFT_INFORMATION]
+
+STACK_DETAIL_FILEDS = STACK_SUMMARY_FILEDS + [DESCRIPTION,
+                                        TIMEOUT_IN_MINUTES,
+                                        ROLE_ARN,
+                                        PARAMETERS,
+                                        TAGS,
+                                        ENABLE_TERMINATION_PROTECTION,
+                                        OUTPUTS,
+                                        CAPABILITIES,
+                                        NOTIFICATION_ARNS,
+                                        DISABLE_ROLLBACK,
+                                        ROLLBACK_CONFIGURATION]
 
 # Stack status filters
 CREATE_IN_PROGRESS = 'CREATE_IN_PROGRESS'
@@ -114,10 +141,12 @@ STRING_MATCH_CONDITIONS = [
 # Errror codes
 ERC_PROFILE_NOTFOUND = 1
 ERC_PROFILE_INVALID = 2
+ERC_STACK_NOTFOUND = 11
 
 # Error message
 ERM_PROFILE_NOTFOUND = 'The profile is not found!'
 ERM_PROFILE_INVALID = 'The credential token is invalid or expired!'
+ERM_STACK_NOTFOUND = "The stack does not exist."
 
 # Colors
 FG_ERROR = 'red'
