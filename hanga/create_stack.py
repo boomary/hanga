@@ -26,20 +26,24 @@ from . import upload_object
 
 @click.option('--object-prefix', '-o',
                 help='S3 object prefix (i.e., directory)',
-                default='/')
+                default='')
 
-@click.option('--params', '-p',
-                help='Parameter file')
+@click.option('--params', '--parameters',
+                help='Parameter file',
+                default=None)
 
-@click.option('--tags', '-t',
-                help='Tag file')               
+@click.option('--tags',
+                help='Tag file',
+                default=None)               
 
 @click.option('--upload', '-u',
                 help='Upload to the bucket prefix',
+                default=False,
                 is_flag=True)  
 
 @click.option('--default', '-d',
                 help='Default parameter and tag files',
+                default=False,
                 is_flag=True)                               
 
 @click.command(name='create')
@@ -49,10 +53,22 @@ def create_stack(name, template, bucket, object_prefix, params, tags, upload, de
     """
     object_prefix = util.reformS3Prefix(object_prefix)
     try:
-        object_key = object_prefix + os.path.basename(open(template, 'r').name)
+        with open(template, 'r') as fTemplate:
+            object_key = object_prefix + os.path.basename(fTemplate.name)
     except FileNotFoundError:
-        click.secho(const.ERM_FILE_NOTFOUND, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_FILE_NOTFOUND)      
+        util.handleFileNotFound(template)
+
+    if params is not None:
+        paramList = util.getJsonDataFromFile(params)
+        click.secho('Use the parameter file', fg=const.FG_INF)
+    else:
+        paramList = list()
+         
+    if tags is not None:
+        tagList = util.getJsonDataFromFile(tags)
+        click.secho('Use the tag file', fg=const.FG_INF) 
+    else:
+        tagList = list()           
 
     if (upload):
         click.secho('The template is being uploaded to the bucket.', fg=const.FG_INF)
@@ -60,19 +76,17 @@ def create_stack(name, template, bucket, object_prefix, params, tags, upload, de
         click.secho('Upload done...', fg=const.FG_INF)
     
     templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
-
     try:
         response = _session.cf.create_stack(StackName=name,
-                                            TemplateURL=templateUrl)
-    # except FileExistsError:
-    #     exit(1)
-    except botocore.exceptions.ClientError:
-        click.secho(const.ERM_INVALID_CREATE, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_INVALID_CREATE)
+                                            TemplateURL=templateUrl,
+                                            Parameters=paramList,
+                                            Tags=tagList)
+    except botocore.exceptions.ClientError as error:
+        util.handleClientError(error)
     except:
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)  
     
     stackId = response[const.STACK_ID]
-    click.secho('The following stack is being created:', fg=const.FG_INF)
+    click.secho('\nThe following stack is being created:', fg=const.FG_INF)
     click.echo(stackId)

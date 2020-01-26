@@ -6,6 +6,7 @@ import botocore
 
 from . import _session
 from . import hanga_constants as const
+from . import hanga_util as util
 from .describe_stack import _describe_stack
 
 @click.option('--name', '-n',
@@ -42,9 +43,8 @@ def protect_stack(name, enable):
                                                         EnableTerminationProtection=enable)
                 click.secho('The new termination protection status:', fg='green')
                 click.echo(enable)
-            except botocore.exceptions.ClientError:
-                click.secho(const.ERM_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
-                sys.exit(const.ERC_INVALID)
+            except botocore.exceptions.ClientError as error:
+                util.handleClientError(error)
             except:
                 click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
                 sys.exit(const.ERC_OTHERS)      

@@ -8,7 +8,6 @@ from . import _session
 from . import hanga_constants as const
 from . import hanga_util as util
 
-
 @click.option('--field', '-f',
                 help='Field to be printed out. You can print out one or more fields:\n'
                      'hanga list -f <field> -f <field> ...\n'
@@ -18,16 +17,16 @@ from . import hanga_util as util
                 type=click.Choice(const.STACK_SUMMARY_FILEDS, case_sensitive=False))
               
 
-@click.option('--match-name', '--mn',
+@click.option('--match-name', '-m',
                 help='Search stacks based on a condition matching their name.\n'
                      'By default, all stack names are searched',
                 default=tuple([const.EXACTLY, const.ALL]),          
                 nargs=2, type=click.Tuple([click.Choice(const.STRING_MATCH_CONDITIONS, case_sensitive=False), str]))
 
-@click.option('--match-status', '--ms',
+@click.option('--match-status', '-s',
                 help='Search stacks based on a condition matching their status type\n'
                      'You can search one or more status types can be listed\n:'
-                     'hanga list -ms <type> --ms <type> ...\n'
+                     'hanga list -s <type> --s <type> ...\n'
                      'By default, all status types except DELETE_COMPLETE are searched.',  
                 default=tuple(const.STACK_STATUS_FILTERS_NO_DELETE_COMPLETE),
                 multiple=True,
@@ -47,9 +46,8 @@ def _list_stacks(field, match_name, match_status):
 
     try:
         response = _session.cf.list_stacks()
-    except botocore.exceptions.ClientError:
-        click.secho(const.ERM_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_INVALID)
+    except botocore.exceptions.ClientError as error:
+        util.handleClientError(error)
     except:
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)  

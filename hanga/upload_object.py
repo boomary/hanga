@@ -44,9 +44,8 @@ def _upload_object(bucket, object_key, file):
     except FileNotFoundError:
         click.secho(const.ERM_FILE_NOTFOUND, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_FILE_NOTFOUND)   
-    except boto3.exceptions.S3UploadFailedError:
-        click.secho(const.ERM_S3_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_S3_INVALID)  
+    except botocore.exceptions.ClientError as error:
+        util.handleClientError(error)
     except:
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)

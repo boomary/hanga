@@ -121,17 +121,15 @@ STRING_MATCH_CONDITIONS = [
 
 # Errror codes
 ERC_PROFILE_NOTFOUND = 1
-ERC_INVALID = 2
-ERC_INVALID_CREATE = 3
-ERC_FILE_NOTFOUND = 4
+ERC_FILE_NOTFOUND = 2
+ERC_JSON_INVALID = 3
 ERC_S3_INVALID = 5
 ERC_OTHERS = 100
 
 # Error message
-ERM_PROFILE_NOTFOUND = "Profile not found."
-ERM_INVALID = "Stack not found, invalid/expired credential, or insufficient permissions"
-ERM_INVALID_CREATE = "Template error, invalid/expired credential, or insufficient permissions"
+ERM_PROFILE_NOTFOUND = "Profile not found or invalid endpoint/region."
 ERM_FILE_NOTFOUND = "Local file not found"
+ERM_JSON_INVALID = "Invalid JSON"
 ERM_S3_INVALID = "S3 not found or not accessible"
 ERM_OTHERS = "Error catched!"
 

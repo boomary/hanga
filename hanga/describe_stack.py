@@ -12,7 +12,7 @@ from . import hanga_util as util
                 required=True,
                 help='Stack name')
 
-@click.option('--print-json',
+@click.option('--print-json', '-p',
                 help='Print the whole list in plain JSON format',
                 default=False,
                 is_flag=True)
@@ -39,9 +39,8 @@ def describe_stack(name, field, print_json):
 def _describe_stack(name, field, print_json):
     try:
         response = _session.cf.describe_stacks(StackName=name)
-    except botocore.exceptions.ClientError:
-        click.secho(const.ERM_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_INVALID)
+    except botocore.exceptions.ClientError as error:
+        util.handleClientError(error)
     except:
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)  

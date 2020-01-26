@@ -3,6 +3,7 @@ import sys
 
 # 3rd-party packages
 import click
+import botocore
 
 # custom packages
 from . import _session
@@ -13,6 +14,7 @@ from . import create_stack
 from . import delete_stack
 from . import protect_stack
 from . import upload_object
+from . import hanga_util as util
 
 
 def _print_version(ctx, param, value):
@@ -50,7 +52,7 @@ def _init_profile(ctx, param, value):
 
 def cli(profile, region):
     try:
-        _session._init_session(profile, region)
+        _session._init_session(profile, region)  
     except:
         click.secho(const.ERM_PROFILE_NOTFOUND, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_PROFILE_NOTFOUND)
