@@ -13,13 +13,19 @@ from . import hanga_util as util
                 help='Stack name')
 
 @click.option('--print-json',
-                help='Print the whole response in JSON format',
+                help='Print the whole list in plain JSON format',
                 default=False,
                 is_flag=True)
 
 @click.option('--field', '-f',
-                help='Field to be printed out',
-                default = (const.STACK_NAME, const.STACK_STATUS),
+                help='Field to be printed out. You can print out one or more fields:\n'
+                     'hanga list -f <field> -f <field> ...\n'
+                     'By default, StackName, Description, StackStatus, CreateionTime, and EnableTerrminationProtection are printed out.',
+                default = tuple([const.STACK_NAME, 
+                            const.DESCRIPTION,
+                            const.STACK_STATUS, 
+                            const.CREATION_TIME,
+                            const.ENABLE_TERMINATION_PROTECTION]),
                 multiple=True,
                 type=click.Choice(const.STACK_DETAIL_FILEDS, case_sensitive=False))
 

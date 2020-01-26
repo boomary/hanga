@@ -1,4 +1,5 @@
 import sys
+import os
 
 import click
 import boto3
@@ -6,6 +7,8 @@ import botocore
 
 from . import _session
 from . import hanga_constants as const
+from . import hanga_util as util
+
 
 
 @click.option('--bucket', '-b',
@@ -32,14 +35,7 @@ def upload_object(bucket, prefix, file):
     _upload_object(bucket, prefix, file)
  
 
-def _upload_object(bucket, prefix, file):
-    if prefix == '/':
-        prefix = '' 
-    elif prefix.startswith('/'):
-        prefix = prefix[1:]
-    elif not prefix.endswith('/'):
-        prefix = prefix + '/'
-    object_key = prefix + file
+def _upload_object(bucket, object_key, file):
 
     try:
         _session.s3.meta.client.upload_file(Filename=file, 
@@ -53,4 +49,6 @@ def _upload_object(bucket, prefix, file):
         sys.exit(const.ERC_S3_INVALID)  
     except:
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)     
+        sys.exit(const.ERC_OTHERS)
+
+    return object_key 

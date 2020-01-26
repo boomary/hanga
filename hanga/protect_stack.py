@@ -10,7 +10,8 @@ from .describe_stack import _describe_stack
 
 @click.option('--name', '-n',
                 required=True,
-                help='Stack name')
+                help='Stack name\n'
+                        'If only this option is used, the command shows the current termination protection status of the stack.')
 
 @click.option('--enable/--disable', '-e/-d',
                 help='Enable/disable the termination protection',
@@ -20,7 +21,7 @@ from .describe_stack import _describe_stack
 @click.command(name='protect')
 def protect_stack(name, enable):
     """
-    Enable a stack to be protected from termination
+    Enable a stack to be protected from termination 
     """    
 
     click.secho('Current termination protection status: ', fg='green')  

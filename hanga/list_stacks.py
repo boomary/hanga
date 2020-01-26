@@ -10,23 +10,26 @@ from . import hanga_util as util
 
 
 @click.option('--field', '-f',
-                help='Field to be printed out. You can one or more fields:\n'
+                help='Field to be printed out. You can print out one or more fields:\n'
                      'hanga list -f <field> -f <field> ...\n'
-                     'Default: -f StackName -f StackStatus',
-                default = (const.STACK_NAME, const.STACK_STATUS),
+                     'By default, StackName and StackStatus are printed out.',
+                default = tuple([const.STACK_NAME, const.STACK_STATUS]),
                 multiple=True,
                 type=click.Choice(const.STACK_SUMMARY_FILEDS, case_sensitive=False))
               
 
 @click.option('--match-name', '--mn',
-                help='List stacks based on a condition matching their name.\n'
-                     'Default: -nm exactly *',
-                default=(const.EXACTLY, const.ALL),          
+                help='Search stacks based on a condition matching their name.\n'
+                     'By default, all stack names are searched',
+                default=tuple([const.EXACTLY, const.ALL]),          
                 nargs=2, type=click.Tuple([click.Choice(const.STRING_MATCH_CONDITIONS, case_sensitive=False), str]))
 
 @click.option('--match-status', '--ms',
-                help='List stacks based on a condition matching their status',  
-                default=const.STACK_STATUS_FILTERS_TUPLE,
+                help='Search stacks based on a condition matching their status type\n'
+                     'You can search one or more status types can be listed\n:'
+                     'hanga list -ms <type> --ms <type> ...\n'
+                     'By default, all status types except DELETE_COMPLETE are searched.',  
+                default=tuple(const.STACK_STATUS_FILTERS_NO_DELETE_COMPLETE),
                 multiple=True,
                 type=click.Choice(const.STACK_STATUS_FILTERS, case_sensitive=False))
 
@@ -36,7 +39,10 @@ def list_stacks(field, match_name, match_status):
     """
     List stacks
     """
+    _list_stacks(field, match_name, match_status)
 
+
+def _list_stacks(field, match_name, match_status):
     mn_cond, mn_value = match_name
 
     try:
@@ -48,15 +54,16 @@ def list_stacks(field, match_name, match_status):
         click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)  
 
+    count_results = 0
     json = response[const.STACK_SUMMARIES]
     for response in json:
 
         stackStatus = str(response[const.STACK_STATUS])
-        match_status = util.recaseTuple(match_status, const.STACK_STATUS_FILTERS)
+        match_status = util.uppercaseTuple(match_status)
         
         contOuterLoop = True
         for s in match_status:
-            if s != stackStatus:
+            if stackStatus != s:
                 continue
             else:
                 contOuterLoop = False
@@ -90,3 +97,7 @@ def list_stacks(field, match_name, match_status):
                 col = const.NULL
             row = row + const.DELIM + col
         click.echo(row)
+        count_results = count_results + 1
+    
+    click.secho('\nTotal number of stacks found:', fg=const.FG_INF)
+    click.echo(count_results)
