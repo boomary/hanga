@@ -1,3 +1,8 @@
+__author__ = "Sivadon Chaisiri"
+__copyright__ = "Copyright (c) 2020 Sivadon Chaisiri"
+__license__ = "MIT License"
+
+
 # AWS CLI 
 DEFAULT_PROFILE = 'default' # Default profile
 REGION_PROFILE = 'region' # Default region
