@@ -1,5 +1,7 @@
 # AWS CLI 
-DEF_PROFILE = 'default' # Default profile
+DEFAULT_PROFILE = 'default' # Default profile
+REGION_PROFILE = 'region' # Default region
+
 
 # Stack fields summary 
 STACKS = 'Stacks'
@@ -30,7 +32,8 @@ DISABLE_ROLLBACK = 'DisableRollback'
 ROLLBACK_CONFIGURATION = 'RollbackConfiguration'
 
 
-STACK_SUMMARY_FILEDS = [STACK_ID, 
+STACK_SUMMARY_FILEDS = [STACK_NAME,
+                    STACK_ID, 
                     CREATION_TIME,
                     LAST_UPDATD_TIME,
                     DELETION_TIME,
@@ -140,17 +143,26 @@ STRING_MATCH_CONDITIONS = [
 
 # Errror codes
 ERC_PROFILE_NOTFOUND = 1
-ERC_PROFILE_INVALID = 2
-ERC_STACK_NOTFOUND = 11
+ERC_INVALID = 2
+ERC_FILE_NOTFOUND = 4
+ERC_S3_INVALID = 5
+ERC_OTHERS = 100
 
 # Error message
-ERM_PROFILE_NOTFOUND = 'The profile is not found!'
-ERM_PROFILE_INVALID = 'The credential token is invalid or expired!'
-ERM_STACK_NOTFOUND = "The stack does not exist."
+ERM_PROFILE_NOTFOUND = "Profile not found."
+ERM_INVALID = "Stack not found, profile invalid, or insufficient permissions"
+ERM_FILE_NOTFOUND = "Local file not found"
+ERM_S3_INVALID = "S3 not found or not accessible"
+ERM_OTHERS = "Error catched!"
+
+# Informatio messages
+
+INF_NOTHING_TO_CHANGE = 'Nothing to change.'
 
 # Colors
 FG_ERROR = 'red'
 BG_ERROR = 'black'
+FG_INF = 'green'
 
 # Others
 ALL = '*'
