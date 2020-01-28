@@ -78,7 +78,7 @@ def create_stack(name, template, bucket, object_prefix, params, tags, upload, ia
     """
     _create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, False)    
 
-def _create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, isDryRun):
+def _create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, isUpdated):
     object_prefix = util.reformS3Prefix(object_prefix)
     try:
         with open(template, 'r') as fTemplate:
@@ -105,7 +105,7 @@ def _create_stack(name, template, bucket, object_prefix, params, tags, upload, i
     
     templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
     try:
-        if (isDryRun):
+        if (isUpdated):
             cName = name + str(random.randint(100000,999999)) # change set name
             response = _session.cf.create_change_set(StackName=name,
                                                 TemplateURL=templateUrl,
@@ -119,9 +119,12 @@ def _create_stack(name, template, bucket, object_prefix, params, tags, upload, i
             click.secho('and deployed to the stack:', fg=const.FG_INF)
             click.echo(stackId)  
 
-            # Confirm prompt to be added
-            # And change set to be monitored until it is ready
-            time.sleep(15)
+            response = _wait_for_done_changeset(name, cName)
+            click.echo(response)
+            
+            # TODO: Change set results to be shown for confirmation
+            
+            util.query_yes_no('Do you want to execute this change set?', 'no')
             response = _session.cf.execute_change_set(StackName=name,
                                                 ChangeSetName=cName)  
             click.secho('The change set is being deployed.', fg=const.FG_INF)                                                
@@ -136,11 +139,33 @@ def _create_stack(name, template, bucket, object_prefix, params, tags, upload, i
             click.echo(stackId)                                                     
     except botocore.exceptions.ClientError as error:
         util.handleClientError(error)
-    except:
-        click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)  
+    # except:
+    #     click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
+    #     sys.exit(const.ERC_OTHERS)  
+
+
+# def _describe_change_set(StackName=name, ChangeSetName=cName):
+#     # NextToken to be included
+#     response = session.cf.client.describe_change_set(StackName=name,
+#                                         ChangeSetName=cName)
+#     return response
+
+def _wait_for_done_changeset(name, cName):
+    animation = "|/-\\"    
+    eResponse = ''
+    response = None   
+    running_time = 0
+    anim_index = 0
     
-   
-       
+    while eResponse not in [const.CS_CREATE_COMPLETE, const.CS_FAILED]:
+        print(animation[anim_index % len(animation)], end="\r")   
+        if running_time % const.DELAY_TIME_FOR_DESCRIBE_CHANGE_SET == 0:
+            response = _session.cf.describe_change_set(StackName=name,
+                                                ChangeSetName=cName)    
+        eResponse = response[const.CS_STATUS]
+        anim_index += 1
+        time.sleep(const.DELAY_TIME_FOR_ANIMATION)
+        running_time += const.DELAY_TIME_FOR_ANIMATION
+    return response
 
 

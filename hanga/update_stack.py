@@ -69,13 +69,13 @@ from .create_stack import _create_stack
                 default=False,
                 is_flag=True)                               
 
-@click.command(name='deploy')
-def deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):
+@click.command(name='update')
+def update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):
     """
-    Deploy a change set to a stack
+    Create a change set for updating an existing stack and deploy it
     """
-    _deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default)    
+    _update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default)    
    
-def _deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):   
+def _update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):   
     _create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, True)    
 

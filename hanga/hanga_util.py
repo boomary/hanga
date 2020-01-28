@@ -60,4 +60,24 @@ def handleClientError(error):
     sys.exit(100)
 
 
+# Credit: http://code.activestate.com/recipes/577058/
+def query_yes_no(question, default="yes"):
+    valid = {"yes": True, "y": True, "yes": True,
+             "no": False, "n": False}
+    if default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = input().lower()
+        if choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write('Please respond with \'yes\' or \'no\'\n')
+
+
 
