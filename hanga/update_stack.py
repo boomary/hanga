@@ -1,6 +1,7 @@
 __author__ = "Sivadon Chaisiri"
 __copyright__ = "Copyright (c) 2020 Sivadon Chaisiri"
 __license__ = "MIT License"
+
 import click
 
 from .deploy_stack import deploy_stack
@@ -43,7 +44,7 @@ from .deploy_stack import deploy_stack
                 is_flag=True)  
 
 @click.option('--named-iam',
-                help='Enable CAPABILITY_NAMED_IAM',               
+                help='Enable CAPABILITY_NAMED_IAM',
                 default=False,
                 is_flag=True)  
 
@@ -60,9 +61,9 @@ from .deploy_stack import deploy_stack
                 default=False,
                 is_flag=True)                               
 
-@click.command(name='create')
-def create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):
+@click.command(name='update')
+def update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):
     """
-    Create a new stack
+    Create a change set for updating an existing stack and deploy it
     """
-    deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, False)    
+    deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, True)    

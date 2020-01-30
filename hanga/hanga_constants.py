@@ -8,7 +8,7 @@ DEFAULT_PROFILE = 'default' # Default profile
 REGION_PROFILE = 'region' # Default region
 
 
-# Stack fields summary 
+# Stack fields and values - summary 
 STACKS = 'Stacks'
 STACK_SUMMARIES = 'StackSummaries'
 STACK_NAME = 'StackName'
@@ -125,6 +125,12 @@ STRING_MATCH_CONDITIONS = [
                         STARTS_WITH,
                         ENDS_WITH]
 
+# change set fields
+CS_STATUS = 'Status'
+CS_EXECUTION_STATUS = 'ExecutionStatus'
+CS_CREATE_COMPLETE = 'CREATE_COMPLETE'
+CS_FAILED = 'FAILED'
+
 # Errror codes
 ERC_PROFILE_NOTFOUND = 1
 ERC_FILE_NOTFOUND = 2
@@ -144,6 +150,7 @@ ERM_OTHERS = "Error catched!"
 INF_NOTHING_TO_CHANGE = 'Nothing to change.'
 
 # Colors
+FG_WARN = 'red'
 FG_ERROR = 'red'
 BG_ERROR = 'black'
 FG_INF = 'green'
@@ -152,3 +159,8 @@ FG_INF = 'green'
 ALL = '*'
 DELIM = ','
 NULL = 'NULL'
+ANIM_STRING = '|/-\\'
+ANIM_LEN = len(ANIM_STRING)
+
+DELAY_TIME_FOR_DESCRIBE_CHANGE_SET = 5
+DELAY_TIME_FOR_ANIMATION = 1
