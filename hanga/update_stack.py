@@ -2,17 +2,9 @@ __author__ = "Sivadon Chaisiri"
 __copyright__ = "Copyright (c) 2020 Sivadon Chaisiri"
 __license__ = "MIT License"
 
-import sys
-import os
-
 import click
-import boto3
-import botocore
 
-from . import _session
-from . import hanga_constants as const
-from . import hanga_util as util
-from .create_stack import _create_stack 
+from .deploy_stack import deploy_stack
 
 @click.option('--name', '-n',
                 required=True,
@@ -74,8 +66,4 @@ def update_stack(name, template, bucket, object_prefix, params, tags, upload, ia
     """
     Create a change set for updating an existing stack and deploy it
     """
-    _update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default)    
-   
-def _update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):   
-    _create_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, True)    
-
+    deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, True)    

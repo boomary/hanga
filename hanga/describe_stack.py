@@ -41,7 +41,13 @@ def describe_stack(name, field, print_json):
     """
     _describe_stack(name, field, print_json)
 
-def _describe_stack(name, field, print_json):
+def _describe_stack(name, 
+                    field = tuple([const.STACK_NAME, 
+                            const.DESCRIPTION,
+                            const.STACK_STATUS, 
+                            const.CREATION_TIME,
+                            const.ENABLE_TERMINATION_PROTECTION]), 
+                    print_json = False):
     try:
         response = _session.cf.describe_stacks(StackName=name)
     except botocore.exceptions.ClientError as error:

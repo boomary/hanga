@@ -150,6 +150,7 @@ ERM_OTHERS = "Error catched!"
 INF_NOTHING_TO_CHANGE = 'Nothing to change.'
 
 # Colors
+FG_WARN = 'red'
 FG_ERROR = 'red'
 BG_ERROR = 'black'
 FG_INF = 'green'
@@ -158,6 +159,8 @@ FG_INF = 'green'
 ALL = '*'
 DELIM = ','
 NULL = 'NULL'
+ANIM_STRING = '|/-\\'
+ANIM_LEN = len(ANIM_STRING)
 
 DELAY_TIME_FOR_DESCRIBE_CHANGE_SET = 5
 DELAY_TIME_FOR_ANIMATION = 1

@@ -78,7 +78,7 @@ cli.add_command(describe_stack.describe_stack)
 cli.add_command(list_stacks.list_stacks)
 cli.add_command(create_stack.create_stack)
 cli.add_command(update_stack.update_stack)
-# cli.add_command(delete_stack.delete_stack)
+cli.add_command(delete_stack.delete_stack)
 cli.add_command(protect_stack.protect_stack)
 cli.add_command(upload_object.upload_object)
 

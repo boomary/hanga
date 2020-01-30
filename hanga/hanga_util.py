@@ -54,14 +54,24 @@ def handleFileNotFound(file):
         sys.exit(const.ERC_FILE_NOTFOUND)    
 
 def handleClientError(error):
-    click.secho('%s: %s' % (error.response['Error']['Code'], 
-                            error.response['Error']['Message']), 
-                            bg=const.BG_ERROR, fg=const.FG_ERROR)
-    sys.exit(100)
+    errorCode = str(error.response['Error']['Code'])
+    errorMessage = str(error.response['Error']['Message'])
+    showMessage = ''
+    exitCode = 100
+    
+    if errorCode == 'ValidationError' and errorMessage.endswith('does not exist'):
+        showMessage = 'The stack does not exist.'
+    elif errorCode == 'ValidationError' and errorMessage.endswith('TerminationProtection is enabled'):
+        showMessage = 'This stack cannot be deleted because it is protected with TerminationProtection.'
+    else:
+        showMessage = error.response['Error']['Code'] + ' ' + error.response['Error']['Message'] 
+                                
+    click.secho('%s' % showMessage, bg=const.BG_ERROR, fg=const.FG_ERROR)   
+    sys.exit(exitCode)
 
 
 # Credit: http://code.activestate.com/recipes/577058/
-def query_yes_no(question, default="yes"):
+def query_yes_no(question, default="no"):
     valid = {"yes": True, "y": True, "yes": True,
              "no": False, "n": False}
     if default == "yes":
