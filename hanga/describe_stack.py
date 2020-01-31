@@ -66,10 +66,8 @@ def _describe_stack(name,
         row = response[next(iField)]
 
         for i in iField:
-            try:
-                col = str(response[i])
-            except: 
-                col = const.NULL
+            value = response.get(i)
+            col = str(value) if value else const.NULL
             row = row + const.DELIM + col
         click.echo(row)
     return row 

@@ -22,8 +22,11 @@ from . import hanga_util as util
               
 
 @click.option('--match-name', '-m',
-                help='Search stacks based on a condition matching their name.\n'
-                     'By default, all stack names are searched',
+                help='Search stacks based on a condition matching their name:\n'
+                        'Format: hanga -m CHOICE VALUE\n'
+                        'VALUE is the string to be searched.\n'
+                        'CHOICE is a match condition type that can be contains, startswith, or endswith.\n'
+                        'By default, all stack names are searched.',
                 default=tuple([const.EXACTLY, const.ALL]),          
                 nargs=2, type=click.Tuple([click.Choice(const.STRING_MATCH_CONDITIONS, case_sensitive=False), str]))
 
@@ -93,10 +96,8 @@ def _list_stacks(field, match_name, match_status):
         row = response[next(iField)]
         
         for i in iField:
-            try:
-                col = str(response[i])
-            except: 
-                col = const.NULL
+            value = response.get(i)
+            col = str(value) if value else const.NULL
             row = row + const.DELIM + col
         click.echo(row)
         count_results = count_results + 1

@@ -13,7 +13,6 @@ from .deploy_stack import deploy_stack
 
 @click.option('--template', '-t',
                 help='Stack template',
-                required=True,
                 type=click.STRING)
 
 @click.option('--bucket', '-b',
@@ -53,13 +52,13 @@ from .deploy_stack import deploy_stack
                 default=False,
                 is_flag=True)  
 
-@click.option('--default', '-f',
+@click.option('--default', '-d',
                 help='Default files to be deployed, that is,\n'
                      '  {stack name}.yaml - Template file\n'
-                     '  {stack name}-params.yaml - parameter file\n'
-                     '  {stack name}-tags.yaml - tag file.\n',
+                     '  {stack name}-params.json - parameter file\n'
+                     '  {stack name}-tags.json - tag file.\n',
                 default=False,
-                is_flag=True)                               
+                is_flag=True)                                   
 
 @click.command(name='update')
 def update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):

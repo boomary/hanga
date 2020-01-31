@@ -125,11 +125,29 @@ STRING_MATCH_CONDITIONS = [
                         STARTS_WITH,
                         ENDS_WITH]
 
-# change set fields
+# change set fields and status
 CS_STATUS = 'Status'
 CS_EXECUTION_STATUS = 'ExecutionStatus'
 CS_CREATE_COMPLETE = 'CREATE_COMPLETE'
 CS_FAILED = 'FAILED'
+CS_UNAVAILABLE = 'UNAVAILABLE'
+CS_AVAILABLE = 'AVAILABLE'
+CS_EXECUTE_IN_PROGRESS = 'EXECUTE_IN_PROGRESS'
+CS_EXECUTE_COMPLETE = 'EXECUTE_COMPLETE'
+CS_EXECUTE_FAILED = 'EXECUTE_FAILED'
+CS_OBSOLETE = 'OBSOLETE',
+CS_RESOURCE_CHANGE = 'ResourceChange'
+CS_CHANGES = 'Changes'
+CS_RESOURCE_CHANGE = 'ResourceChange'
+CS_ACTION = 'Action'
+CS_ADD = 'Add'
+CS_MODIFY = 'Modify'
+CS_REMOVE = 'Remove'
+CS_IMPORT = 'Import'
+CS_LOGICAL_RESOURCE_ID = 'LogicalResourceId'
+CS_RESOURCE_TYPE = 'ResourceType'
+CS_REPLACEMENT = 'Replacement'
+
 
 # Errror codes
 ERC_PROFILE_NOTFOUND = 1
@@ -141,7 +159,7 @@ ERC_OTHERS = 100
 # Error message
 ERM_PROFILE_NOTFOUND = "Profile not found or invalid endpoint/region."
 ERM_FILE_NOTFOUND = "Local file not found"
-ERM_JSON_INVALID = "Invalid JSON"
+ERM_JSON_INVALID = "Invalid JSON: %s"
 ERM_S3_INVALID = "S3 not found or not accessible"
 ERM_OTHERS = "Error catched!"
 
@@ -155,6 +173,10 @@ FG_ERROR = 'red'
 BG_ERROR = 'black'
 FG_INF = 'green'
 
+# File extensions
+YAML_EXT = '.yaml'
+JSON_EXT = '.json'
+
 # Others
 ALL = '*'
 DELIM = ','
@@ -163,4 +185,6 @@ ANIM_STRING = '|/-\\'
 ANIM_LEN = len(ANIM_STRING)
 
 DELAY_TIME_FOR_DESCRIBE_CHANGE_SET = 5
-DELAY_TIME_FOR_ANIMATION = 1
+DELAY_TIME_FOR_ANIMATION = 0.25
+
+NEXT_TOKEN = 'NextToken'

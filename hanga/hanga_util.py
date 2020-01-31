@@ -37,7 +37,7 @@ def reformS3Prefix(prefix):
     return prefix
 
 
-def getJsonDataFromFile(sJson):
+def getJsonDataFromFile(sJson, baseName):
     try:
         with open(sJson, 'r') as fJson:
             text = fJson.read()
@@ -45,7 +45,7 @@ def getJsonDataFromFile(sJson):
     except FileNotFoundError:
         handleFileNotFound(sJson)
     except json.decoder.JSONDecodeError: 
-        click.secho(const.ERM_JSON_INVALID, bg=const.BG_ERROR, fg=const.FG_ERROR)
+        click.secho(const.ERM_JSON_INVALID % baseName, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_FILE_NOTFOUND)    
     return jsonData                 
 
