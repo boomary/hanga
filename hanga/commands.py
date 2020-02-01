@@ -21,6 +21,7 @@ from . import create_stack
 from . import update_stack
 from . import delete_stack
 from . import protect_stack
+from . import cost_template
 from . import upload_object
 from . import hanga_util as util
 from . import hanga_constants as const
@@ -76,6 +77,7 @@ cli.add_command(create_stack.create_stack)
 cli.add_command(update_stack.update_stack)
 cli.add_command(delete_stack.delete_stack)
 cli.add_command(protect_stack.protect_stack)
+cli.add_command(cost_template.cost_template)
 cli.add_command(upload_object.upload_object)
 
 

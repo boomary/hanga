@@ -14,7 +14,7 @@ import botocore
 from . import _session
 from . import hanga_constants as const
 from . import hanga_util as util
-from .describe_stack import _describe_stack
+from .list_resources import _list_resources
 
 @click.option('--name', '-n',
                 required=True,
@@ -32,10 +32,13 @@ def delete_stack(name, yes):
     """    
     try:
         deleteAction = False
-        click.secho('The folllowing stack will be deleted:', fg=const.FG_INF) 
-        _describe_stack(name=name)  # Check if the stack exists     
+
+        _list_resources(name, 
+                        [const.RESOURCE_TYPE, const.LOGICAL_RESOURCE_ID],
+                        const.MAX_RESOURCES_STACK)
+
         if not yes:
-            click.secho('WARNING: Resources of the stack will be deleted and unrecoverable if they are unprotected with RETAIN.', fg=const.FG_WARN)
+            click.secho('WARNING: The above resources of the stack will be deleted and unrecoverable if they are unprotected with RETAIN.', fg=const.FG_WARN)
         
         # If --yes flag is not specified, prompt the confirmation question.
         if not yes: 

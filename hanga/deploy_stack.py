@@ -41,21 +41,7 @@ def deploy_stack(name, template, bucket, reuse, object_prefix, params, tags, upl
         click.secho('Use the default file option.', fg=const.FG_INF)
 
     if not reuse:
-        object_prefix = util.reformS3Prefix(object_prefix)
-
-        try:
-            with open(template, 'r') as fTemplate:
-                baseName = os.path.basename(fTemplate.name)
-                object_key = object_prefix + baseName
-                click.secho('Use the template file: %s' % baseName, fg=const.FG_INF)        
-        except FileNotFoundError:
-            util.handleFileNotFound(template)
-        
-        templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
-        if (upload):
-            click.secho('The template is being uploaded to the bucket.', fg=const.FG_INF)
-            upload_object._upload_object(bucket, object_key, os.path.abspath(template))
-            click.secho('The template has been uploaded to the bucket.', fg=const.FG_INF)
+        templateUrl = _formUrl_and_upload(template, bucket, object_prefix, upload)
 
     if params is not None:
         baseName = os.path.basename(params)        
@@ -185,6 +171,26 @@ def _describe_changeset(name, cName, response):
                     click.echo('  %s %s having ID: %s to be replaced.' % (sAction, resourceType, logicalResourceId))
                 else:
                     click.echo('  %s %s having ID: %s to be conditionally replaced.' % (sAction, resourceType, logicalResourceId))
+
+
+def _formUrl_and_upload(template, bucket, object_prefix, upload):
+    object_prefix = util.reformS3Prefix(object_prefix)
+
+    try:
+        with open(template, 'r') as fTemplate:
+            baseName = os.path.basename(fTemplate.name)
+            object_key = object_prefix + baseName
+            click.secho('Use the template file: %s' % baseName, fg=const.FG_INF)        
+    except FileNotFoundError:
+        util.handleFileNotFound(template)
+    
+    templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
+    if (upload):
+        click.secho('The template is being uploaded to the bucket.', fg=const.FG_INF)
+        upload_object._upload_object(bucket, object_key, os.path.abspath(template))
+        click.secho('The template has been uploaded to the bucket.', fg=const.FG_INF)
+    
+    return templateUrl
 
 def _wait_for_created_changeset(name, cName):   
     click.secho('Please wait while the change set is being created...', fg=const.FG_INF)

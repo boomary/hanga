@@ -25,8 +25,8 @@ from . import hanga_util as util
                 type=click.Choice(const.STACK_RESOURCE_SUMMARY_FILEDS, case_sensitive=False))
 
 @click.option('--max-items', '-m',
-                help='Maximum number of resources to be returned (default: 100)\n',
-                default = 100,
+                help='Maximum number of resources to be returned (default: ' + str(const.MAX_RESOURCES_STACK) +  ')\n',
+                default = const.MAX_RESOURCES_STACK,
                 type=int)
 
 @click.command(name='lresources')
@@ -74,5 +74,5 @@ def _list_resources(name, field, max_items):
           if nextToken is None:
                break
      
-     click.secho('\nTotal number of reources returned:', fg=const.FG_INF)
+     click.secho('\nTotal number of resources listed:', fg=const.FG_INF)
      click.echo(count_results)
