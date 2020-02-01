@@ -51,8 +51,8 @@ def _upload_object(bucket, object_key, file):
         sys.exit(const.ERC_FILE_NOTFOUND)   
     except botocore.exceptions.ClientError as error:
         util.handleClientError(error)
-    except:
-        click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)
+    # except:
+    #     click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
+    #     sys.exit(const.ERC_OTHERS)
 
     return object_key 

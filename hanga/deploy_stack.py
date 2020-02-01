@@ -16,30 +16,46 @@ from . import hanga_constants as const
 from . import hanga_util as util
 from . import upload_object
 
-def deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, isUpdated):
-    if not default and template is None:
-        click.secho('Either --template (-t) or --default (-d) parameter is required.', bg=const.BG_ERROR, fg=const.FG_ERROR)
+def deploy_stack(name, template, bucket, reuse, object_prefix, params, tags, upload, yes, iam, named_iam, default, isUpdated):
+
+    if not reuse and not default and template is None:
+        click.secho('Either --template (-t), or --default (-d), or --reuse (-r) option is required.', bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_OTHERS)   
 
-    if default and (template is not None or params is not None or tags is not None):
-        click.secho('The --default (-d) parameter cannot be used with template, params, or tags pameter.', bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)     
+    if not reuse and bucket is None:
+        click.secho('When --template (-t) or --default (-d) option is used, --bucket (-b) option is required.', bg=const.BG_ERROR, fg=const.FG_ERROR)
+        sys.exit(const.ERC_OTHERS)  
 
+    if not reuse and default and (template is not None or params is not None or tags is not None):
+        click.secho('The --default (-d) option cannot be used with template, params, or tags option.', bg=const.BG_ERROR, fg=const.FG_ERROR)
+        sys.exit(const.ERC_OTHERS)   
+
+    if reuse and (bucket is not None or upload or template is not None):
+        click.secho('The --reuse (-r) option cannot be used with --template (-t), --bucket (-b), or --upload (-u) option.', bg=const.BG_ERROR, fg=const.FG_ERROR)
+        sys.exit(const.ERC_OTHERS)     
+    
     if default:
         template = name + const.YAML_EXT
         params = name + '-params' + const.JSON_EXT
         tags = name + '-tags' + const.JSON_EXT    
         click.secho('Use the default file option.', fg=const.FG_INF)
 
-    object_prefix = util.reformS3Prefix(object_prefix)
+    if not reuse:
+        object_prefix = util.reformS3Prefix(object_prefix)
 
-    try:
-        with open(template, 'r') as fTemplate:
-            baseName = os.path.basename(fTemplate.name)
-            object_key = object_prefix + baseName
-            click.secho('Use the template file: %s' % baseName, fg=const.FG_INF)
-    except FileNotFoundError:
-        util.handleFileNotFound(template)
+        try:
+            with open(template, 'r') as fTemplate:
+                baseName = os.path.basename(fTemplate.name)
+                object_key = object_prefix + baseName
+                click.secho('Use the template file: %s' % baseName, fg=const.FG_INF)        
+        except FileNotFoundError:
+            util.handleFileNotFound(template)
+        
+        templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
+        if (upload):
+            click.secho('The template is being uploaded to the bucket.', fg=const.FG_INF)
+            upload_object._upload_object(bucket, object_key, os.path.abspath(template))
+            click.secho('The template has been uploaded to the bucket.', fg=const.FG_INF)
 
     if params is not None:
         baseName = os.path.basename(params)        
@@ -54,23 +70,33 @@ def deploy_stack(name, template, bucket, object_prefix, params, tags, upload, ia
         click.secho('Use the tag file: %s' % baseName, fg=const.FG_INF) 
     else:
         tagList = list()           
-
-    if (upload):
-        click.secho('The template is being uploaded to the bucket.', fg=const.FG_INF)
-        upload_object._upload_object(bucket, object_key, os.path.abspath(template))
-        click.secho('The template has been uploaded to the bucket.', fg=const.FG_INF)
-    
-    templateUrl = 'https://' + bucket + '.s3.amazonaws.com/' + object_key
+        
     try:
         cName = name + str(random.randint(100000,999999)) # change set name
         cType = 'UPDATE' if isUpdated else 'CREATE'
 
-        response = _session.cf.create_change_set(StackName=name,
-                                            TemplateURL=templateUrl,
-                                            Parameters=paramList,
-                                            ChangeSetName=cName,
-                                            ChangeSetType=cType,
-                                            Tags=tagList)
+        capabilities = []
+        if iam:
+            capabilities.append(const.CAPABILITY_IAM)
+        if named_iam:
+            capabilities.append(const.CAPABILITY_NAMED_IAM)
+
+        if not reuse:
+            response = _session.cf.create_change_set(StackName=name,
+                                                TemplateURL=templateUrl,
+                                                Capabilities=capabilities,
+                                                Parameters=paramList,
+                                                ChangeSetName=cName,
+                                                ChangeSetType=cType,
+                                                Tags=tagList)
+        else:
+            response = _session.cf.create_change_set(StackName=name,
+                                                UsePreviousTemplate=reuse,
+                                                Capabilities=capabilities,
+                                                Parameters=paramList,
+                                                ChangeSetName=cName,
+                                                ChangeSetType=cType,
+                                                Tags=tagList)            
         csId = response[const.CHANGESET_ID]
         stackId = response[const.STACK_ID]
         click.secho('\nThe following change set (ARN - name) is being created:', fg=const.FG_INF)                                                
@@ -88,8 +114,11 @@ def deploy_stack(name, template, bucket, object_prefix, params, tags, upload, ia
             # TODO: Change set results to be shown for confirmation
             _describe_changeset(name, cName, response)
 
-            isYes = util.query_yes_no('\nDo you want to execute this change set?', 'no')
-            if not isYes:
+            # If --yes flag is not specified, prompt the confirmation question.
+            if not yes: 
+                yes = util.query_yes_no('\nDo you want to execute this change set?', 'no')
+            
+            if not yes:
                 if isUpdated:
                     _session.cf.delete_change_set(StackName=name,
                                                     ChangeSetName=cName)
@@ -100,8 +129,11 @@ def deploy_stack(name, template, bucket, object_prefix, params, tags, upload, ia
                 response = _session.cf.execute_change_set(StackName=name,
                                                     ChangeSetName=cName)  
                 click.secho('The change set is being deployed.', fg=const.FG_INF)    
-                response = _wait_for_executed_changeset(name)  
-                click.secho('\nThe executed change set is done!', fg=const.FG_INF)
+                eResponse = _wait_for_executed_changeset(name)  
+                if (eResponse in [const.UPDATE_COMPLETE, const.IMPORT_COMPLETE, const.CREATE_COMPLETE]):
+                    click.secho('\nThe executed change set was complete.', fg=const.FG_INF)
+                else:
+                    click.secho('\nThe executed change set got rollback with status: %s' % eResponse, fg=const.FG_ERROR)
         else:
             click.secho('Nothing to be created/updated.', fg=const.FG_INF) 
 
@@ -116,7 +148,8 @@ def _describe_changeset(name, cName, response):
     dictChanges = {const.CS_ADD: [],
                     const.CS_REMOVE: [], 
                     const.CS_MODIFY: []}
-    
+    click.echo()
+
     while True:
         changes = response[const.CS_CHANGES]
         for change in changes:
@@ -143,15 +176,15 @@ def _describe_changeset(name, cName, response):
     for i in range(3):
         if len(dictChanges[lActions[i]]) > 0:
             sAction = sActions[i]
-            click.secho('\nThe following resources will be %s:' % pActions[i], fg=const.FG_INF) 
+            click.secho('The following resources will be %s:' % pActions[i], fg=const.FG_INF) 
             for resource in dictChanges[lActions[i]]:
                 resourceType, logicalResourceId, replacement = resource
                 if replacement == 'False':
-                    click.echo(' [%s] %s having ID: %s.' % (sAction, resourceType, logicalResourceId))
+                    click.echo('  %s %s having ID: %s.' % (sAction, resourceType, logicalResourceId))
                 elif replacement == 'True':
-                    click.echo(' [%s] %s having ID: %s to be replaced.' % (sAction, resourceType, logicalResourceId))
+                    click.echo('  %s %s having ID: %s to be replaced.' % (sAction, resourceType, logicalResourceId))
                 else:
-                    click.echo(' [%s] %s having ID: %s to be conditionally replaced.' % (sAction, resourceType, logicalResourceId))
+                    click.echo('  %s %s having ID: %s to be conditionally replaced.' % (sAction, resourceType, logicalResourceId))
 
 def _wait_for_created_changeset(name, cName):   
     click.secho('Please wait while the change set is being created...', fg=const.FG_INF)
@@ -201,5 +234,5 @@ def _wait_for_executed_changeset(name):
         time.sleep(const.DELAY_TIME_FOR_ANIMATION)
         running_time += const.DELAY_TIME_FOR_ANIMATION
 
-    return response
+    return eResponse
 

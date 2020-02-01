@@ -21,25 +21,36 @@ from .describe_stack import _describe_stack
                 type=click.STRING,
                 help='Stack name')
 
+@click.option('--yes', '-y',
+                help='(NOT RECOMMEND!) Proceed the stack update without prompting',
+                is_flag=True)  
+
 @click.command(name='delete')
-def delete_stack(name):
+def delete_stack(name, yes):
     """
     Delete a stack
     """    
     try:
         deleteAction = False
+        click.secho('The folllowing stack will be deleted:', fg=const.FG_INF) 
         _describe_stack(name=name)  # Check if the stack exists     
-        click.secho('WARNING: Resources of the stack will be deleted and unrecoverable if they are unprotected with RETAIN.', fg=const.FG_WARN)
-        isYes = util.query_yes_no('Do you really want to delete this stack?', 'no')
-        if not isYes:
-            click.secho('You have aborted this change set.', fg=const.FG_INF) 
-            sys.exit(0)
+        if not yes:
+            click.secho('WARNING: Resources of the stack will be deleted and unrecoverable if they are unprotected with RETAIN.', fg=const.FG_WARN)
         
-        _session.cf.delete_stack(StackName=name)
-        deleteAction = True
-        eResponse = _wait_for_done_deletion(name)
-        if eResponse != const.DELETE_COMPLETE:
-            click.secho('The stack was unsuccessfully deleted with this status: %s!' % eResponse, fg=const.FG_ERROR)
+        # If --yes flag is not specified, prompt the confirmation question.
+        if not yes: 
+            yes = util.query_yes_no('\nDo you want to execute this change set?', 'no')
+
+        if not yes:
+            click.secho('You have aborted this change set.', fg=const.FG_INF) 
+        else:
+            _session.cf.delete_stack(StackName=name)
+            deleteAction = True
+            eResponse = _wait_for_done_deletion(name)
+            if eResponse != const.DELETE_COMPLETE:
+                click.secho('The stack was unsuccessfully deleted with this status: %s!' % eResponse, fg=const.FG_ERROR)
+            else:
+                click.secho('The stack has been deleted!', fg=const.FG_INF)                
     except botocore.exceptions.ClientError as error:
         if deleteAction and str(error.response['Error']['Code']) == 'ValidationError' and str(error.response['Error']['Message']).endswith('does not exist'):
             click.secho('The stack has been deleted!', fg=const.FG_INF)  

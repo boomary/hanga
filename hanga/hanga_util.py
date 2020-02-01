@@ -63,6 +63,10 @@ def handleClientError(error):
         showMessage = 'The stack does not exist.'
     elif errorCode == 'ValidationError' and errorMessage.endswith('TerminationProtection is enabled'):
         showMessage = 'This stack cannot be deleted because it is protected with TerminationProtection.'
+    elif errorCode == 'InsufficientCapabilitiesException' and errorMessage.endswith('[CAPABILITY_IAM]'):
+        showMessage = 'This stack requires [CAPABILITY_IAM]. Specify --iam option to enable [CAPABILITY_IAM].'
+    elif errorCode == 'InsufficientCapabilitiesException' and errorMessage.endswith('[CAPABILITY_NAMED_IAM]'):
+        showMessage = 'This stack requires [CAPABILITY_NAMED_IAM]. Specify --iam option to enable [CAPABILITY_NAMED_IAM].'
     else:
         showMessage = error.response['Error']['Code'] + ' ' + error.response['Error']['Message'] 
                                 

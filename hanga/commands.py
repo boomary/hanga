@@ -19,7 +19,6 @@ from . import update_stack
 from . import delete_stack
 from . import protect_stack
 from . import upload_object
-from .events import list_events
 from . import hanga_util as util
 from . import hanga_constants as const
 
@@ -64,16 +63,7 @@ def cli(profile, region):
         click.secho(const.ERM_PROFILE_NOTFOUND, bg=const.BG_ERROR, fg=const.FG_ERROR)
         sys.exit(const.ERC_PROFILE_NOTFOUND)
 
-# @click.group()
-# def events():
-#     """
-#     Display events with sub-commands
-#     """
-#     pass
 
-# events.add_command(list_events.list_events)
-
-# cli.add_command(events)
 cli.add_command(describe_stack.describe_stack)
 cli.add_command(list_stacks.list_stacks)
 cli.add_command(create_stack.create_stack)

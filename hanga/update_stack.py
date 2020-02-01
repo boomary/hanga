@@ -4,7 +4,7 @@ __license__ = "MIT License"
 
 import click
 
-from .deploy_stack import deploy_stack
+from . import deploy_stack
 
 @click.option('--name', '-n',
                 required=True,
@@ -16,8 +16,11 @@ from .deploy_stack import deploy_stack
                 type=click.STRING)
 
 @click.option('--bucket', '-b',
-                help='S3 bucket',
-                required=True)
+                help='S3 bucket')
+
+@click.option('--reuse', '-r',
+                help='Use the previous template associated with the stack',
+                is_flag=True)
 
 @click.option('--object-prefix', '-o',
                 help='S3 object prefix (i.e., directory)\n'
@@ -37,6 +40,10 @@ from .deploy_stack import deploy_stack
                 default=False,
                 is_flag=True)  
 
+@click.option('--yes', '-y',
+                help='(NOT RECOMMEND!) Proceed the stack update without prompting',
+                is_flag=True)  
+
 @click.option('--iam',
                 help='Enable CAPABILITY_IAM',
                 default=False,
@@ -47,10 +54,10 @@ from .deploy_stack import deploy_stack
                 default=False,
                 is_flag=True)  
 
-@click.option('--auto-expand',
-                help='Enable CAPABILITY_AUTO_EXPAND',
-                default=False,
-                is_flag=True)  
+# @click.option('--auto-expand',
+#                 help='Enable CAPABILITY_AUTO_EXPAND',
+#                 default=False,
+#                 is_flag=True)  
 
 @click.option('--default', '-d',
                 help='Default files to be deployed, that is,\n'
@@ -61,8 +68,8 @@ from .deploy_stack import deploy_stack
                 is_flag=True)                                   
 
 @click.command(name='update')
-def update_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default):
+def update_stack(name, template, bucket, reuse, object_prefix, params, tags, upload, yes, iam, named_iam, default):
     """
     Create a change set for updating an existing stack and deploy it
     """
-    deploy_stack(name, template, bucket, object_prefix, params, tags, upload, iam, named_iam, auto_expand, default, True)    
+    deploy_stack.deploy_stack(name, template, bucket, reuse, object_prefix, params, tags, upload, yes, iam, named_iam, default, True)    
