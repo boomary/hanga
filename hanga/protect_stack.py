@@ -50,6 +50,6 @@ def protect_stack(name, enable):
                 click.echo(enable)
             except botocore.exceptions.ClientError as error:
                 util.handleClientError(error)
-            except:
-                click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-                sys.exit(const.ERC_OTHERS)      
+            # except:
+            #     click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
+            #     sys.exit(const.ERC_OTHERS)      

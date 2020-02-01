@@ -13,8 +13,10 @@ import botocore
 # custom packages
 from . import _session
 from . import list_stacks
+from . import list_resources
 from . import describe_stack
 from . import describe_events
+from . import describe_resource
 from . import create_stack
 from . import update_stack
 from . import delete_stack
@@ -67,7 +69,9 @@ def cli(profile, region):
 
 cli.add_command(describe_stack.describe_stack)
 cli.add_command(describe_events.describe_events)
+cli.add_command(describe_resource.describe_resource)
 cli.add_command(list_stacks.list_stacks)
+cli.add_command(list_resources.list_resources)
 cli.add_command(create_stack.create_stack)
 cli.add_command(update_stack.update_stack)
 cli.add_command(delete_stack.delete_stack)

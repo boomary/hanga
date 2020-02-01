@@ -18,10 +18,6 @@ from . import deploy_stack
                 help='S3 bucket',
                 required=True)
 
-@click.option('--reuse', '-r',
-                help='Use the previous template associated with the stack',
-                is_flag=True)
-
 @click.option('--object-prefix', '-o',
                 help='S3 object prefix (i.e., directory)\n'
                         'By default, the prefix is empty (i.e., root the bucket).',
@@ -67,8 +63,8 @@ from . import deploy_stack
                 is_flag=True)                               
 
 @click.command(name='create')
-def create_stack(name, template, bucket, reuse, object_prefix, params, tags, upload, yes, iam, named_iam, default):
+def create_stack(name, template, bucket, object_prefix, params, tags, upload, yes, iam, named_iam, default):
     """
     Create a new stack
     """
-    deploy_stack.deploy_stack(name, template, bucket, reuse, object_prefix, params, tags, upload, yes, iam, named_iam, default, False)    
+    deploy_stack.deploy_stack(name, template, bucket, False, object_prefix, params, tags, upload, yes, iam, named_iam, default, False)    

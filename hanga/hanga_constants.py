@@ -15,7 +15,7 @@ STACK_NAME = 'StackName'
 STACK_ID = 'StackId'
 CHANGESET_ID = 'Id'
 CREATION_TIME = 'CreationTime'
-LAST_UPDATD_TIME = 'LastUpdatedTime'
+LAST_UPDATED_TIME = 'LastUpdatedTime'
 DELETION_TIME = 'DeletionTime'
 STACK_STATUS = 'StackStatus'
 STACK_STATUS_REASON = 'StackStatusReason'
@@ -41,7 +41,7 @@ ROLLBACK_CONFIGURATION = 'RollbackConfiguration'
 STACK_SUMMARY_FILEDS = [STACK_NAME,
                     STACK_ID, 
                     CREATION_TIME,
-                    LAST_UPDATD_TIME,
+                    LAST_UPDATED_TIME,
                     DELETION_TIME,
                     STACK_STATUS,
                     STACK_STATUS_REASON,
@@ -129,6 +129,13 @@ TIMESTAMP = 'Timestamp'
 RESOURCE_STATUS = 'ResourceStatus'
 RESOURCE_STATUS_REASON = 'ResourceStatusReason'
 
+# Stack resources
+STACK_RESOURCE_SUMMARIES = 'StackResourceSummaries'
+STACK_RESOURCE_DETAIL = 'StackResourceDetail'
+LAST_UPDATED_TIMESTAMP = 'LastUpdatedTimestamp'
+META_DATA = 'Metadata'
+DRIFT_INFORMATION = 'DriftInformation'
+
 # Default collections
 
 STACK_STATUS_FILTERS = [
@@ -167,6 +174,20 @@ STACK_EVENT_FIELDS = [EVENT_ID,
                 RESOURCE_STATUS,
                 RESOURCE_STATUS_REASON]
 
+STACK_RESOURCE_FILEDS = [RESOURCE_TYPE,
+                            LOGICAL_RESOURCE_ID,
+                            PHYSICAL_RESOURCE_ID,
+                            LAST_UPDATED_TIMESTAMP,
+                            RESOURCE_STATUS,
+                            RESOURCE_STATUS_REASON,
+                            DESCRIPTION,
+                            META_DATA,
+                            DRIFT_INFORMATION]
+
+STACK_RESOURCE_SUMMARY_FILEDS = STACK_RESOURCE_FILEDS[:] 
+STACK_RESOURCE_SUMMARY_FILEDS.remove(DESCRIPTION)
+STACK_RESOURCE_SUMMARY_FILEDS.remove(META_DATA)
+
 DEFAULT_LSTACKSTATUS_FIELDS = tuple(STACK_STATUS_FILTERS_NO_DELETE_COMPLETE)
 
 DEFAULT_DSTACK_FIELDS = tuple([STACK_NAME, 
@@ -179,6 +200,12 @@ DEFAULT_DEVENTS_FIELDS = tuple([RESOURCE_TYPE,
                                 LOGICAL_RESOURCE_ID,
                                 RESOURCE_STATUS,
                                 TIMESTAMP])
+
+DEFAULT_RESOURCE_FIELDS = tuple([RESOURCE_TYPE,
+                                LOGICAL_RESOURCE_ID,
+                                RESOURCE_STATUS,
+                                LAST_UPDATED_TIMESTAMP])
+
 
 # Capabilities
 CAPABILITY_IAM = 'CAPABILITY_IAM'

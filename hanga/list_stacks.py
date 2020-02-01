@@ -55,9 +55,9 @@ def _list_stacks(field, match_name, match_status):
         response = _session.cf.list_stacks()
     except botocore.exceptions.ClientError as error:
         util.handleClientError(error)
-    except:
-        click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)  
+    # except:
+    #     click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
+    #     sys.exit(const.ERC_OTHERS)  
 
     count_results = 0
     json = response[const.STACK_SUMMARIES]
