@@ -19,7 +19,7 @@ from . import hanga_util as util
 
 @click.option('--field', '-f',
                 help='Field to be printed out. You can print out one or more fields:\n'
-                     'hanga list -f <field> -f <field> ...\n'
+                     'hanga dstack -f <field> -f <field> ...\n'
                      'By default, StackName, Description, StackStatus, CreateionTime, and EnableTerrminationProtection are printed out.',
                 default = const.DEFAULT_DSTACK_FIELDS,
                 multiple=True,

@@ -18,7 +18,7 @@ from . import hanga_util as util
 
 @click.option('--field', '-f',
                 help='Field to be printed out. You can print out one or more fields:\n'
-                     'hanga list -f <field> -f <field> ...\n'
+                     'hanga devents -f <field> -f <field> ...\n'
                      'By default, ResourceType, LogicalResourceId, ResourceStatus, and Timestamp are printed out.',
                 default = const.DEFAULT_DEVENTS_FIELDS,
                 multiple=True,
