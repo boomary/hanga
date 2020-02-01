@@ -155,8 +155,8 @@ def _describe_changeset(name, cName, response):
         for change in changes:
             rChange = change[const.CS_RESOURCE_CHANGE]
             action = rChange[const.CS_ACTION]
-            resourceType = rChange[const.CS_RESOURCE_TYPE]
-            logicalResourceId = rChange[const.CS_LOGICAL_RESOURCE_ID]
+            resourceType = rChange[const.RESOURCE_TYPE]
+            logicalResourceId = rChange[const.LOGICAL_RESOURCE_ID]
             replacement = rChange.get(const.CS_REPLACEMENT)  
             replacement = replacement if replacement is not None else 'False'
             dictChanges[action].append((resourceType, logicalResourceId, replacement))

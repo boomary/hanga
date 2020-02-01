@@ -17,58 +17,40 @@ from . import hanga_util as util
                 required=True,
                 help='Stack name')
 
-@click.option('--print-json', '-p',
-                help='Print the whole list in plain JSON format',
-                default=False,
-                is_flag=True)
-
 @click.option('--field', '-f',
                 help='Field to be printed out. You can print out one or more fields:\n'
                      'hanga list -f <field> -f <field> ...\n'
                      'By default, StackName, Description, StackStatus, CreateionTime, and EnableTerrminationProtection are printed out.',
-                default = tuple([const.STACK_NAME, 
-                            const.DESCRIPTION,
-                            const.STACK_STATUS, 
-                            const.CREATION_TIME,
-                            const.ENABLE_TERMINATION_PROTECTION]),
+                default = const.DEFAULT_DSTACK_FIELDS,
                 multiple=True,
                 type=click.Choice(const.STACK_DETAIL_FILEDS, case_sensitive=False))
 
-@click.command(name='describe')
-def describe_stack(name, field, print_json):
+@click.command(name='dstack')
+def describe_stack(name, field):
     """
-    Show information of stack
+    Describe a stack
     """
-    _describe_stack(name, field, print_json)
+    _describe_stack(name, field)
 
-def _describe_stack(name, 
-                    field = tuple([const.STACK_NAME, 
-                            const.DESCRIPTION,
-                            const.STACK_STATUS, 
-                            const.CREATION_TIME,
-                            const.ENABLE_TERMINATION_PROTECTION]), 
-                    print_json = False):
+def _describe_stack(name, field = const.DEFAULT_DSTACK_FIELDS):
     try:
         response = _session.cf.describe_stacks(StackName=name)
     except botocore.exceptions.ClientError as error:
         util.handleClientError(error)
-    except:
-        click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
-        sys.exit(const.ERC_OTHERS)  
+    # except:
+    #     click.secho(const.ERM_OTHERS, bg=const.BG_ERROR, fg=const.FG_ERROR)
+    #     sys.exit(const.ERC_OTHERS)  
 
-    if print_json:
-        click.echo(response)
-    else:
-        response = response[const.STACKS][0]
+    response = response[const.STACKS][0]
 
-        field = util.recaseTuple(field, const.STACK_DETAIL_FILEDS)
-        iField = iter(field)
-        row = response[next(iField)]
+    field = util.recaseTuple(field, const.STACK_DETAIL_FILEDS)
+    iField = iter(field)
+    row = response[next(iField)]
 
-        for i in iField:
-            value = response.get(i)
-            col = str(value) if value else const.NULL
-            row = row + const.DELIM + col
-        click.echo(row)
+    for i in iField:
+        value = response.get(i)
+        col = str(value) if value else const.NULL
+        row = row + const.DELIM + col
+    click.echo(row)
     return row 
     

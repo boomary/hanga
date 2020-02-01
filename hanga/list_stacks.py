@@ -35,7 +35,7 @@ from . import hanga_util as util
                      'You can search one or more status types can be listed\n:'
                      'hanga list -s <type> --s <type> ...\n'
                      'By default, all status types except DELETE_COMPLETE are searched.',  
-                default=tuple(const.STACK_STATUS_FILTERS_NO_DELETE_COMPLETE),
+                default=const.DEFAULT_LSTACKSTATUS_FIELDS,
                 multiple=True,
                 type=click.Choice(const.STACK_STATUS_FILTERS, case_sensitive=False))
 
@@ -61,10 +61,11 @@ def _list_stacks(field, match_name, match_status):
 
     count_results = 0
     json = response[const.STACK_SUMMARIES]
+    match_status = util.uppercaseTuple(match_status)
+
     for response in json:
 
         stackStatus = str(response[const.STACK_STATUS])
-        match_status = util.uppercaseTuple(match_status)
         
         contOuterLoop = True
         for s in match_status:
@@ -100,7 +101,7 @@ def _list_stacks(field, match_name, match_status):
             col = str(value) if value else const.NULL
             row = row + const.DELIM + col
         click.echo(row)
-        count_results = count_results + 1
+        count_results += 1
     
     click.secho('\nTotal number of stacks found:', fg=const.FG_INF)
     click.echo(count_results)

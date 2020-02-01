@@ -85,6 +85,52 @@ IMPORT_ROLLBACK_IN_PROGRESS = 'IMPORT_ROLLBACK_IN_PROGRESS'
 IMPORT_ROLLBACK_FAILED = 'IMPORT_ROLLBACK_FAILED'
 IMPORT_ROLLBACK_COMPLETE = 'IMPORT_ROLLBACK_COMPLETE'
 
+
+
+# Filter types
+EXACTLY = 'exactly'
+CONTAINS = "contains"
+STARTS_WITH = "startswith"
+ENDS_WITH = "endswith"
+
+STRING_MATCH_CONDITIONS = [
+                        EXACTLY,
+                        CONTAINS,
+                        STARTS_WITH,
+                        ENDS_WITH]
+
+# change set fields and status
+CS_STATUS = 'Status'
+CS_EXECUTION_STATUS = 'ExecutionStatus'
+CS_CREATE_COMPLETE = 'CREATE_COMPLETE'
+CS_FAILED = 'FAILED'
+CS_UNAVAILABLE = 'UNAVAILABLE'
+CS_AVAILABLE = 'AVAILABLE'
+CS_EXECUTE_IN_PROGRESS = 'EXECUTE_IN_PROGRESS'
+CS_EXECUTE_COMPLETE = 'EXECUTE_COMPLETE'
+CS_EXECUTE_FAILED = 'EXECUTE_FAILED'
+CS_OBSOLETE = 'OBSOLETE',
+CS_RESOURCE_CHANGE = 'ResourceChange'
+CS_CHANGES = 'Changes'
+CS_ACTION = 'Action'
+CS_ADD = 'Add'
+CS_MODIFY = 'Modify'
+CS_REMOVE = 'Remove'
+CS_IMPORT = 'Import'
+CS_REPLACEMENT = 'Replacement'
+
+# Stack events
+STACK_EVENTS = 'StackEvents'
+EVENT_ID = 'EventId'
+LOGICAL_RESOURCE_ID = 'LogicalResourceId'
+PHYSICAL_RESOURCE_ID = 'PhysicalResourceId'
+RESOURCE_TYPE = 'ResourceType'
+TIMESTAMP = 'Timestamp'
+RESOURCE_STATUS = 'ResourceStatus'
+RESOURCE_STATUS_REASON = 'ResourceStatusReason'
+
+# Default collections
+
 STACK_STATUS_FILTERS = [
     CREATE_IN_PROGRESS,
     CREATE_FAILED,
@@ -113,40 +159,26 @@ STACK_STATUS_FILTERS = [
 STACK_STATUS_FILTERS_NO_DELETE_COMPLETE = STACK_STATUS_FILTERS[:]
 STACK_STATUS_FILTERS_NO_DELETE_COMPLETE.remove(DELETE_COMPLETE)
 
-# Filter types
-EXACTLY = 'exactly'
-CONTAINS = "contains"
-STARTS_WITH = "startswith"
-ENDS_WITH = "endswith"
+STACK_EVENT_FIELDS = [EVENT_ID,
+                RESOURCE_TYPE,
+                LOGICAL_RESOURCE_ID,
+                PHYSICAL_RESOURCE_ID,
+                TIMESTAMP,
+                RESOURCE_STATUS,
+                RESOURCE_STATUS_REASON]
 
-STRING_MATCH_CONDITIONS = [
-                        EXACTLY,
-                        CONTAINS,
-                        STARTS_WITH,
-                        ENDS_WITH]
+DEFAULT_LSTACKSTATUS_FIELDS = tuple(STACK_STATUS_FILTERS_NO_DELETE_COMPLETE)
 
-# change set fields and status
-CS_STATUS = 'Status'
-CS_EXECUTION_STATUS = 'ExecutionStatus'
-CS_CREATE_COMPLETE = 'CREATE_COMPLETE'
-CS_FAILED = 'FAILED'
-CS_UNAVAILABLE = 'UNAVAILABLE'
-CS_AVAILABLE = 'AVAILABLE'
-CS_EXECUTE_IN_PROGRESS = 'EXECUTE_IN_PROGRESS'
-CS_EXECUTE_COMPLETE = 'EXECUTE_COMPLETE'
-CS_EXECUTE_FAILED = 'EXECUTE_FAILED'
-CS_OBSOLETE = 'OBSOLETE',
-CS_RESOURCE_CHANGE = 'ResourceChange'
-CS_CHANGES = 'Changes'
-CS_RESOURCE_CHANGE = 'ResourceChange'
-CS_ACTION = 'Action'
-CS_ADD = 'Add'
-CS_MODIFY = 'Modify'
-CS_REMOVE = 'Remove'
-CS_IMPORT = 'Import'
-CS_LOGICAL_RESOURCE_ID = 'LogicalResourceId'
-CS_RESOURCE_TYPE = 'ResourceType'
-CS_REPLACEMENT = 'Replacement'
+DEFAULT_DSTACK_FIELDS = tuple([STACK_NAME, 
+                            DESCRIPTION,
+                            STACK_STATUS, 
+                            CREATION_TIME,
+                            ENABLE_TERMINATION_PROTECTION])
+
+DEFAULT_DEVENTS_FIELDS = tuple([RESOURCE_TYPE,
+                                LOGICAL_RESOURCE_ID,
+                                RESOURCE_STATUS,
+                                TIMESTAMP])
 
 # Capabilities
 CAPABILITY_IAM = 'CAPABILITY_IAM'
